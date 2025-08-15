@@ -10,6 +10,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 import {
   Form,
@@ -51,6 +52,7 @@ export const SignInView = () => {
       {
         email: data.email,
         password: data.password,
+        callbackURL:"/"
       },
       {
         onSuccess: () => {
@@ -126,7 +128,7 @@ export const SignInView = () => {
                 </Alert>
               )}
 
-              <Button disabled={pending} type="submit" className="w-full">
+              <Button disabled={pending} type="submit" className="w-full cursor-pointer">
                 {pending ? "Signing In..." : "Sign In"}
               </Button>
 
@@ -140,11 +142,46 @@ export const SignInView = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" type="button" className="w-full">
-                  Google
+                <Button 
+                
+                onClick={() => authClient.signIn.social(
+                  {
+                    provider: "google",
+                    callbackURL:"/"
+                  },
+                  {
+                    onSuccess: () => {
+                      setPending(false);
+                     
+                    },
+                    onError: ({ error }) => {
+                      setError(error.message);
+                      setPending(false);
+                    },
+                  }
+                )}
+                variant="outline" type="button" className="w-full cursor-pointer">
+                  <FaGoogle/>
                 </Button>
-                <Button variant="outline" type="button" className="w-full">
-                  Github
+                <Button 
+                onClick={() => authClient.signIn.social(
+                  {
+                    provider: "github",
+                    callbackURL:"/"
+                  },
+                  {
+                    onSuccess: () => {
+                      setPending(false);
+                    },
+                    onError: ({ error }) => {
+                      setError(error.message);
+                      setPending(false);
+                    },
+                  }
+                )}
+
+                variant="outline" type="button" className="w-full cursor-pointer">
+                  <FaGithub/>
                 </Button>
               </div>
 
