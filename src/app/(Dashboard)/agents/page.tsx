@@ -6,12 +6,29 @@ import { Suspense } from "react";
 import { LoadingState } from "@/components/loadingState";
 import { ErrorBoundary } from "react-error-boundary";
 import { AgentsViewLoading } from "@/modules/agents/server/ui/views/agents-view";
+import { AgentsListHeader } from "@/modules/agents/server/ui/components/list-header";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 const Page = async () => {
+
+   const session = await auth.api.getSession(
+    {
+         headers:await headers()
+    }
+  )
+  if(!session)
+  {
+    redirect("/auth/sign-in");
+  }
+
     const queryClient = await getQueryClient();
     void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions())    
     
     return (
+        <>
+        <AgentsListHeader/>
         <HydrationBoundary state={dehydrate(queryClient)}>
             <Suspense fallback={<AgentsViewLoading />}>
                <ErrorBoundary fallback={<AgentsViewError />}>
@@ -19,6 +36,7 @@ const Page = async () => {
                </ErrorBoundary>
             </Suspense>
         </HydrationBoundary>
+        </>
     )
 }
 
