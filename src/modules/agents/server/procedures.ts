@@ -8,7 +8,8 @@ import { TRPCError } from "@trpc/server";
 import { create } from "domain";
 import { agentInsertSchema } from "../schemas";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
+import { eq, getTableColumns } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 export const agentRouter = createTRPCRouter({
   getMany: protectedProcedure.query(async () => {
@@ -19,7 +20,12 @@ export const agentRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       const [existingAgent] = await db
-        .select()
+        .select(
+          {
+            meetingCount: sql<number>`count(*)`,
+            ...getTableColumns(agents),
+          }
+        )
         .from(agents)
         .where(eq(agents.id, input.id));
 
