@@ -6,25 +6,27 @@ import { LoadingState } from "@/components/loadingState"
 import { ErrorState } from "@/components/errorState"
 // import { ResponsiveDialog } from "@/components/responsive-dialog"
 import { Button } from "@/components/ui/button"
+import { DataTable } from "../components/data-table"
+import { columns } from "../components/columns"
+import { EmptyState } from "@/components/emptyState"
+// import { Payment } from "../components/columns"
+
+
 
 
 export const AgentsView = () => {
     const trpc = useTRPC()
     const {data} = useSuspenseQuery(trpc.agents.getMany.queryOptions())
-    
+     
     return (
-        <div>
-            {/* <ResponsiveDialog
-            title="Responsive test"
-            description="Responsive test"
-            open={true}
-            onOpenChange={() => {}}
-            >
-               <Button>
-                Some actions
-               </Button>
-            </ResponsiveDialog> */}
-            {JSON.stringify(data,null,2)}
+        <div className="flex-1 gap-y-4 pb-4 px-4 md:px-8 flex flex-col ">
+            <DataTable data={data} columns={columns}/>
+            {data.length === 0 && (
+                <EmptyState
+                title="Create Your First Agent"
+                description="Create an agent to join your Meetings . Each agent will follow your instructions and help you in your meetings."
+                />
+            )}
         </div>
     )   ;
 };
