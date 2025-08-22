@@ -10,9 +10,16 @@ import { AgentsListHeader } from "@/modules/agents/server/ui/components/list-hea
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
+import type { SearchParams } from "nuqs";
+import { localSearchParams } from "@/modules/agents/params";
 
-const Page = async () => {
 
+interface AgentsPageProps {
+searchParams : Promise<SearchParams>
+}
+
+const Page = async ({searchParams}:AgentsPageProps) => {
+   const filter = await localSearchParams(searchParams);
    const session = await auth.api.getSession(
     {
          headers:await headers()
@@ -24,7 +31,7 @@ const Page = async () => {
   }
 
     const queryClient = await getQueryClient();
-    void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions())    
+    void queryClient.prefetchQuery(trpc.agents.getMany.queryOptions({...filter}))    
     
     return (
         <>
