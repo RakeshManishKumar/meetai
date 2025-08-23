@@ -39,9 +39,7 @@ const createAgent = useMutation(
     trpc.agents.create.mutationOptions({
             onSuccess: async()=>{
                await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}))
-                if(initialValue?.id){
-                    await queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({id:initialValue.id}))
-                }
+                
                 onSuccess?.()
             },
             onError:(error)=>{
@@ -50,6 +48,27 @@ const createAgent = useMutation(
             
         })
     )
+
+
+
+    const updateAgent = useMutation(
+        trpc.agents.update.mutationOptions({
+                onSuccess: async()=>{
+                   await queryClient.invalidateQueries(trpc.agents.getMany.queryOptions({}))
+                    if(initialValue?.id){
+                        await queryClient.invalidateQueries(trpc.agents.getOne.queryOptions({id:initialValue.id}))
+                    }
+                    onSuccess?.()
+                },
+                onError:(error)=>{
+                    toast(error.message)
+                }
+                
+            })
+        )
+    
+
+
     const form = useForm<z.infer<typeof agentInsertSchema>>({
        resolver:zodResolver(agentInsertSchema),
        defaultValues:{
@@ -58,10 +77,13 @@ const createAgent = useMutation(
        }
     })
     const isEdit = !!initialValue?.id;
-    const isPending = createAgent.isPending ;
+    const isPending = createAgent.isPending || updateAgent.isPending ;
     const onSubmit = (values:z.infer<typeof agentInsertSchema>)=>{
         if(isEdit){
-           console.log("TODO : updateAgent")
+           updateAgent.mutate({
+            ...values,
+            id: initialValue?.id ?? ""
+           })
         }else{
             createAgent.mutate(values)
         }
@@ -125,7 +147,7 @@ const createAgent = useMutation(
                 type="submit"
                 disabled={isPending}
                 >
-                    {isEdit ? "Updating..." : "Create"}
+                    {isEdit ? "Update" : "Create"}
                 </Button>
              </div>
             </form>
