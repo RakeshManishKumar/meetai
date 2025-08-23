@@ -1,4 +1,4 @@
-import { integer,  varchar } from "drizzle-orm/pg-core";
+import { integer,  pgEnum,  varchar } from "drizzle-orm/pg-core";
 
 import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
 
@@ -76,6 +76,31 @@ export const agents = pgTable("agents",
     userId:text("user_id")
     .notNull(),
     instructions:text("instructions").notNull(),
+    
+  }
+)
+
+export const meetingStatus = pgEnum("meeting_status", ["Upcoming", "active", "completed", "cancelled"])
+
+export const meetings = pgTable("meetings",
+  {
+    id:text("id")
+    .primaryKey()
+    .$defaultFn(()=>nanoid()),
+    name:text("name").notNull(),
+    UserId : text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+
+    agentId : text("agent_id").notNull().references(() => agents.id, { onDelete: "cascade" }),
+    
+    status:meetingStatus("status").notNull().default("Upcoming"),
+
+    createdAt:timestamp("created_at").notNull().defaultNow(),
+    updatedAt:timestamp("updated_at").notNull().defaultNow(),
+    startedAt:timestamp("started_at"),
+    endedAt:timestamp("ended_at"),
+    transcriptUrl:text("transcript_url"),
+    recordingUrl:text("recording_url"),
+    summary:text("summary")
     
   }
 )
