@@ -36,14 +36,13 @@ export const AgentsView = () => {
 
             {data.items.length === 0 && (
                 <EmptyState
-                title="Create Your First Agent"
-                description="Create an agent to join your Meetings . Each agent will follow your instructions and help you in your meetings."
-                />
+                    title="Create Your First Agent"
+                    description="Create an agent to join your Meetings . Each agent will follow your instructions and help you in your meetings." image={"/empty.png"}                />
             )}
         </div>
     )   ;
 };
-
+ 
 
 export const AgentsViewLoading = () => {
     return (
