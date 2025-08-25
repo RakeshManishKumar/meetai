@@ -99,18 +99,30 @@ const agents = useQuery(trpc.agents.getMany.queryOptions({
         <>
         <NewAgentDialog open={openNewAgentDialog} onOpenChange={setOpenNewAgentDialog} />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10 max-h-[80vh] overflow-y-auto pr-4 -mr-4 text-lg">
+          {/* Custom scrollbar styling */}
+          <style jsx>{`
+            .overflow-y-auto::-webkit-scrollbar {
+              width: 6px;
+            }
+            .overflow-y-auto::-webkit-scrollbar-track {
+              background: transparent;
+            }
+            .overflow-y-auto::-webkit-scrollbar-thumb {
+              background-color: #ddd;
+              border-radius: 3px;
+            }
+          `}</style>
           {/* Name with avatar */}
-          <div className="flex items-center gap-x-4">
-          
+          <div className="space-y-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>Name</FormLabel>
+                <FormItem className="w-full">
+                  <FormLabel className="text-lg font-medium">Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter meeting name" />
+                    <Input {...field} placeholder="Enter meeting name" className="text-lg h-12" />
                   </FormControl>
                   <FormDescription>
                     Give your meeting a descriptive name
@@ -120,14 +132,14 @@ const agents = useQuery(trpc.agents.getMany.queryOptions({
               )}
             />
           </div>
-  
+
           {/* Agent ID */}
           <FormField
             control={form.control}
             name="agentId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Agent ID</FormLabel>
+                <FormLabel className="text-lg font-medium">Agent</FormLabel>
                 <FormControl>
                 <CommandSelect
                 options={(agents.data?.items ?? []).map((agent)=>({
@@ -151,26 +163,24 @@ const agents = useQuery(trpc.agents.getMany.queryOptions({
                 placeholder="Select an agent"
                 />
                 </FormControl>
-                <FormDescription>
-             Not found what you&aposs;re looking for? 
-             
-             <Button
-             
-             type = "button"
-             onClick={()=>setOpenNewAgentDialog(true)}
-             variant="link"
-             className="text-primary hover:underline"
-             >
-                Create new agent
-                </Button> 
-                </FormDescription>
+                <FormDescription className="flex flex-wrap items-center gap-1">
+                    <span>Not found what you're looking for?</span>
+                    <Button
+                      type="button"
+                      onClick={() => setOpenNewAgentDialog(true)}
+                      variant="link"
+                      className="h-auto p-0 text-primary hover:underline"
+                    >
+                      Create new agent
+                    </Button>
+                  </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-  
+
           {/* Actions */}
-          <div className="flex justify-end gap-x-3 pt-2">
+          <div className="sticky bottom-0 flex justify-end gap-6 bg-background/90 backdrop-blur-sm p-4 -mx-4 -mb-4 mt-10 rounded-lg border-t">
             {onCancel && (
               <Button
                 variant="outline"
