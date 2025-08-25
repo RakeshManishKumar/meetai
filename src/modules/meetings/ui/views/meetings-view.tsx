@@ -27,8 +27,7 @@ export const MeetingsView = () => {
       {data.items.length === 0 && (
         <EmptyState
           title="Create Your First Meeting"
-          description="Create a meeting to join your Agents . Each agent will follow your instructions and help you in your meetings."
-        />
+          description="Create a meeting to join your Agents . Each agent will follow your instructions and help you in your meetings." image={"/empty.svg"}        />
       )}
     </div>
   );
