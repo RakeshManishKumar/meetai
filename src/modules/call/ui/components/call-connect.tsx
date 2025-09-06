@@ -30,8 +30,12 @@ export const CallConnect = ({
   userImage,
 }: CallConnectProps) => {
   const trpc = useTRPC();
-  const { mutateAsync: generateTokn } = useMutation(
-    trpc.meetings.generateToekn.mutationOptions(),
+  const { mutateAsync: generateToken } = useMutation(
+    trpc.meetings.generateToken.mutationOptions({
+      onError: (error) => {
+        console.error('Token generation failed:', error);
+      },
+    }),
   );
 
   const [client, setClient] = useState<StreamVideoClient>();
@@ -46,7 +50,7 @@ export const CallConnect = ({
       },
       tokenProvider: async () => {
         try {
-          const token = await generateTokn();
+          const token = await generateToken();
           return token as string;
         } catch (error) {
           console.error('Failed to generate token:', error);
@@ -61,7 +65,7 @@ export const CallConnect = ({
       _client?.disconnectUser();
       setClient(undefined);
     };
-  }, [userId, userName, userImage, generateTokn]);
+  }, [userId, userName, userImage, generateToken]);
 
   const [call, setCall] = useState<Call>();
 
