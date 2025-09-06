@@ -1,35 +1,38 @@
-import { LogInIcon } from "lucide-react";
-import {
-  DefaultVideoPlaceholder,
-  StreamVideoParticipant,
-  ToggleAudioPreviewButton,
-  ToggleVideoPreviewButton,
-  useCallStateHooks,
-  VideoPreview,
-} from "@stream-io/video-react-sdk";
-import { authClient } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
-import { generateAvatarUri } from "@/lib/avatar";
 import Link from "next/link";
-import "@stream-io/video-react-sdk/dist/css/styles.css";
-  
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 export const CallEnded = () => {
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-sidebar-accent/20 to-sidebar/20 p-4">
-      <div className="flex w-full max-w-2xl flex-col items-center gap-10 rounded-xl bg-background p-10 shadow-sm">
-        <div className="w-full text-center space-y-3">
-          <h2 className="text-3xl font-semibold text-red-500">Call has been ended</h2>
-          <p className="text-lg text-muted-foreground">
-          Summary of the call will be available here in few minutes .
+    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-red-50 via-white to-red-100 p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex w-full max-w-xl flex-col items-center gap-8 rounded-2xl bg-white p-10 shadow-xl border border-red-100"
+      >
+        {/* Header */}
+        <div className="w-full text-center space-y-4">
+          <h2 className="text-4xl font-bold text-red-600 tracking-tight">
+            Call Ended
+          </h2>
+          <p className="text-lg text-gray-600 leading-relaxed">
+            A detailed summary of this call will be available shortly.  
+            Please check back in a few minutes.
           </p>
         </div>
-        <Button asChild variant="outline" size="lg" className="w-full text-base sm:flex-1 bg-green-500 text-white hover:bg-green-600">
-          <Link href="/meetings" className="py-6">
-            Back to meetings
+
+        {/* Action */}
+        <Button
+          asChild
+          size="lg"
+          className="w-full rounded-xl bg-green-500 text-white text-base font-medium py-6 shadow-sm hover:bg-green-600 hover:shadow-md transition-all"
+        >
+          <Link href="/meetings">
+            Back to Meetings
           </Link>
         </Button>
-      </div>
+      </motion.div>
     </div>
   );
 };
